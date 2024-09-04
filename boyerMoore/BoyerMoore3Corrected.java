@@ -1,3 +1,5 @@
+
+
 public class BoyerMoore3 {
     // Preprocessing for the bad character heuristic
     private int[] preprocessBadCharacter(String pattern) {
