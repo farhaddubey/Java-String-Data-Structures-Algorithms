@@ -1,6 +1,6 @@
 // Robbin Karp Algorithm Implementationi 
 
-public class RobinKarp{
+public class RobinKarpCustom{
     // Prime No. for modulus in hashing to minimize the collisions 
     private static final int PRIME = 101; 
     // Robbin Karp Algorithm to search for a pattern in a given text 
