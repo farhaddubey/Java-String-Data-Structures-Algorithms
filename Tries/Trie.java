@@ -1,47 +1,58 @@
-// Trie Class with Insert, Search, Prefix methods 
 public class Trie{
-    private TrieNode root; 
+    private TrieNode root; // Just declared the pointer a reference basically
     public Trie(){
-        root=new TrieNode(); // Initializing the root as TrieNode 
-    }
-    
-    //Method to insert a word in Trie 
-    public void insert(String word){
-        TrieNode current=root; 
-        for(char c: word.toCharArray()){
-            int index=c-'a'; // Getting the index from 0-25 for the characters a-'a'==0.........25 
-            if(current.children[index]==null){
-                current.children[index]=new TrieNode(); // Creating a new Trie Node if not present 
-            }
-            current=current.children[index]; // Moving to the child node 
-        }
-        // After inserting all characters, marking the last node as the end of the word 
-        current.isEndOfWord = true; 
-    }
+        root=new TrieNode(); // initailzing the node 
+    } 
 
-    // Method to search for a word in the trie 
-    public boolean search(String word){
-        TrieNode current=root; 
+    // Method to insert a word into the Trie 
+    public void insert(String word){
+        TrieNode current=root;
         for(char c: word.toCharArray()){
-            int index=c-'a';   
+            int index=c-'a'; //    67-65=2   a->0 b->1 c->2 0------------------25 
             if(current.children[index]==null){
-                return false; // word is not present 
+                current.children[index]=new TrieNode(); 
             }
             current=current.children[index]; 
         }
-        return current.isEndOfWord; // Checking if that's the end of the word 
+        current.isEndOfWord=true; 
     }
 
-    // Method to check if prefix exists in the Trie 
+    // Method to search a word into the Trie 
+    public boolean search(String word){
+        TrieNode current=root; 
+        for(char c: word.toCharArray()){
+            int index=c-'a'; 
+            if(current.children[index]==null){
+                return false;
+            }
+            current=current.children[index];
+        }
+        return current.isEndOfWord;
+    }
+
+    // Method to check if a prefix exsits int the Trie 
     public boolean startsWith(String prefix){
         TrieNode current=root; 
         for(char c: prefix.toCharArray()){
             int index=c-'a'; 
             if(current.children[index]==null){
-                return false; // Prefix is not present 
+                return false; // Pattern of prefix do not exists 
             }
             current=current.children[index]; 
         }
-        return true; // All characters of the prefix were found.. 
+        return true; // All charcters of the prefix exists so returnign true. 
+    }
+
+    public static void main(String[] args){
+        Trie trie=new Trie(); 
+        // IInseting words 
+        trie.insert("apple"); 
+        trie.insert("app"); 
+        trie.insert("mango"); 
+        // Searching words 
+        System.out.println(trie.search("apple"));  //true; 
+        System.out.println(trie.search("applemobile")); //false;
+        
+        System.out.println(trie.startsWith("man"));
     }
 }
