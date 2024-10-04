@@ -1,77 +1,63 @@
 import java.util.Map; 
-import java.util.HashMap; 
+import java.util.HashMap;
 
-class CompressedTrie {
-    // The root of the Trie, initially an empty node
-    private CompressedTrieNode root;
+class CompressedTrie{
+    private CompressedTrieNode root; 
     public CompressedTrie(){
         root=new CompressedTrieNode("");
     }
-    // Insert method to add a word to the compressed Trie 
+    // Insert method for the compressed Trie 
     public void insert(String word){
-        CompressedTrieNode current=root; // Start traversing from the root node
-        int index=0; // Starting with the 1st character of the word
-        // Looping through the word until all characters are processed
-        while(index<word.length()){
-            char currentChar=word.charAt(index);
-            // Checking if there's already a child node with that character
-            if(current.children.containsKey(currentChar)){
-                // If there's a matching child node, then fetching all attributes of that char from the mapping 
-                CompressedTrieNode child=current.children.get(currentChar);
-                // Now extracting the value of the child node 
-                String childNode=child.value;
+        CompressedTrieNode current=root; 
+        int index=0; 
 
-                // Now finding the common prefix length between the current word and the child's node values 
+        // Continue until all characters of the words are inserted 
+        while(index<word.length()){
+            char currentChar=word.charAt(index); // Getting the current char 
+            // Checking if the current character exists in the children of the current node
+            if(current.children.containsKey(currentChar)){
+                CompressedTrieNode child=current.children.get(currentChar); // Get the child node 
+                String childValue =child.value;
+
+                // Finding the length of the common prefix between the word(starting at index) and childValue
                 int commonPrefixLength=findCommonPrefixLength(word.substring(index), childValue);
 
-
-                // If the common prefix is the entire child node value, continue traversing down
+                // If the entire child value matches the prefix of the word 
                 if(commonPrefixLength==childValue.length()){
-                    // Moving the index forward by the length of the common prefix 
-                    index+=commonPrefixLength;
-                    // Updating the current pointer to the child node as required 
-                    current=child;
+                    index+=commonPrefixLength; // Moving the index forward by the length of the matched prefix 
+                    current=child; /// Updating the current to child
                 }else{
-                    // If only part of the child node value matches, we need to split the node 
-                    // The common prefix between the word and the child node 
-                    String commonPrefix=childValue.substring(0, commonPrefixLength);
-                    // The remaining part of the child nodes value 
-                    String suffix=childValue.substring(commonPrefixLength);
+                    // Splitting the child node at the point of mismatch 
+                    String commonPrefix=childValue.substring(0, commonPrefixLength); // Extracted the commmon prefix
+                    String suffix=childValue.substring(commonPrefixLength); // Remaining part of the child value 
 
-                    // Creating a newnode for the common prefix by the common prefix using as value 
-                    CompressedTrieNode newNode =new CompressedTrieNode(commonPrefix);
-                    // Replacing the child node in the current node's children with the newnode
+                    // Creating a newNode for the common prefix and replacing the original child 
+                    CompressedTrieNode newNode=new CompressedTrieNode(commonPrefix);
                     current.children.put(currentChar, newNode);
 
-                    // The suffix becomes a child of the newNode 
+                    // The old child becomes a child of the new Node 
                     newNode.children.put(suffix.charAt(0), new CompressedTrieNode(suffix));
-                    // Transfer the children and endOfWord marker from the old child to the suffix node 
                     newNode.children.get(suffix.charAt(0)).children=child.children; 
-                    newnode.children.get(suffix.charAt(0)).isEndOfWord=child.isEndOfWord; 
-                    // Now the current pointer moves to the newNode (common prefix node)
-                    current=newNode;
-                    // Updating the index to skip the matched prefix 
-                    index+=commonPrefixLength;
+                    newNode.children.get(suffix.charAt(0)).isEndOfWord=child.isEndOfWord;
+
+                    current=newNode;// Updating or Moving down to the current Node 
+                    index+=commonPrefixLength; // Moving the index forward by the length of the common Prefix 
                 }
             }else{
-                // If no matching child is found creating a newNode for the remaining part of the word
+                // If no child matches the current Character, add a newNode for the remaining word 
                 current.children.put(currentChar, new CompressedTrieNode(word.substring(index)));
-                // Marking the newly added node as the end of the word 
-                current.children.get(currentChar).isEndOfWord=true;
-                // Ending the method as the word has been fully inserted 
-                return;
+                current.children.get(currentChar).isEndOfWord=true; // Marking as the end of the word 
+                return; // Insertion complete 
             }
         }
-        // Once we exit the loop, marking the current node as the end of the word 
-        current.isEndOfWord = true;
+        current.isEndOfWord=true;
     }
-    // Helper function to find the common prefix length between two strinngs 
-    private int commonPrefixLength(String wordPart, String nodeValue){
-        int length=Math.min(wordPart.length(), nodeValue.length());
-        int i=0; 
-        while(i<length && wordPart.charAt(i)==nodeValue.charAt(i)){
-            i++;
+    private int findCommonPrefixLength(String wordPart, String nodeValue){
+        int value=Math.min(wordPart.length(), nodeValue.length());
+        int index=0;
+        while(index<value && wordPart.charAt(index)==nodeValue.charAt(index)){
+            index++;
         }
-        return i;
+        return index;
     }
 }

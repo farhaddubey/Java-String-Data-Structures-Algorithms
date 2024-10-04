@@ -2,9 +2,9 @@ import java.util.Map;
 import java.util.HashMap; 
 
 public class CompressedTrieNode{
-    String value;
+    String value; 
+    boolean isEndOfWord; 
     Map<Character, CompressedTrieNode> children;
-    boolean isEndOfWord;
     public CompressedTrieNode(String value){
         this.value=value;
         this.children=new HashMap<>();
